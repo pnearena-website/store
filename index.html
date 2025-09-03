@@ -1510,6 +1510,27 @@
             to { transform: rotate(360deg); }
         }
         
+        /* Order ID Sync Status */
+        .sync-status {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 5px;
+            box-shadow: var(--shadow);
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .sync-status i {
+            color: var(--primary-pink);
+        }
+        
         /* Responsive */
         @media (max-width: 992px) {
             .nav-links {
@@ -1585,6 +1606,12 @@
                 width: 50px;
                 height: 50px;
                 font-size: 1.2rem;
+            }
+            .sync-status {
+                bottom: 15px;
+                left: 15px;
+                font-size: 0.8rem;
+                padding: 8px 12px;
             }
         }
     </style>
@@ -2027,11 +2054,17 @@
         </button>
     </div>
     
+    <!-- Order ID Sync Status -->
+    <div class="sync-status" id="syncStatus">
+        <i class="fas fa-sync-alt fa-spin"></i>
+        <span>Syncing order IDs...</span>
+    </div>
+    
     <script>
-        // Google Sheets Web App URL - Updated with your new URL
+        // Google Sheets Web App URL
         const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbx84nmQdPl331AvqKeSAOG9YHokzg6L1zaIjmqTfM95I7ZMHx0NXPJhy5JTvgkGmpfADQ/exec';
         
-        // Order ID counter (local fallback)
+        // Order ID counter
         let orderCounter = 1;
         
         // Cart Functionality
@@ -2039,8 +2072,109 @@
         let cartCount = 0;
         let cartTotal = 0;
         
+        // Function to fetch the last order ID from Google Sheet
+        async function fetchLastOrderId() {
+            try {
+                // Show sync status
+                document.getElementById('syncStatus').style.display = 'flex';
+                
+                // Create a unique callback name for JSONP
+                const callbackName = 'jsonpCallback_' + Math.round(100000 * Math.random());
+                
+                // Create a promise to handle the JSONP response
+                return new Promise((resolve, reject) => {
+                    // Define the callback function
+                    window[callbackName] = function(response) {
+                        // Clean up
+                        delete window[callbackName];
+                        document.body.removeChild(script);
+                        
+                        // Hide sync status
+                        document.getElementById('syncStatus').style.display = 'none';
+                        
+                        // Resolve with the last order ID
+                        resolve(response.lastOrderId);
+                    };
+                    
+                    // Create the script element
+                    const script = document.createElement('script');
+                    script.src = `${GOOGLE_SHEET_URL}?action=getLastOrderId&callback=${callbackName}`;
+                    
+                    // Handle error
+                    script.onerror = function() {
+                        delete window[callbackName];
+                        document.body.removeChild(script);
+                        document.getElementById('syncStatus').style.display = 'none';
+                        reject(new Error('Failed to fetch last order ID'));
+                    };
+                    
+                    // Add the script to the document
+                    document.body.appendChild(script);
+                });
+            } catch (error) {
+                console.error('Error fetching last order ID:', error);
+                document.getElementById('syncStatus').style.display = 'none';
+                
+                // Try to get from localStorage as fallback
+                const savedOrderId = localStorage.getItem('lastOrderId');
+                if (savedOrderId) {
+                    return savedOrderId;
+                }
+                
+                // If all else fails, return null
+                return null;
+            }
+        }
+        
+        // Function to initialize order counter
+        async function initializeOrderCounter() {
+            try {
+                const lastOrderId = await fetchLastOrderId();
+                
+                if (lastOrderId) {
+                    // Extract the numeric part from the lastOrderId string (e.g., "ORD-0001" -> 1)
+                    const numericPart = parseInt(lastOrderId.replace(/\D/g, ''));
+                    
+                    if (!isNaN(numericPart)) {
+                        orderCounter = numericPart + 1;
+                        // Save to localStorage as fallback
+                        localStorage.setItem('lastOrderId', lastOrderId);
+                        localStorage.setItem('orderCounter', orderCounter);
+                        console.log('Order counter initialized to:', orderCounter);
+                        return;
+                    }
+                }
+                
+                // If we couldn't get a valid order ID from the server, try localStorage
+                const savedCounter = localStorage.getItem('orderCounter');
+                if (savedCounter) {
+                    orderCounter = parseInt(savedCounter);
+                    console.log('Using order counter from localStorage:', orderCounter);
+                } else {
+                    // Default fallback
+                    orderCounter = 1;
+                    console.log('Using default order counter:', orderCounter);
+                }
+            } catch (error) {
+                console.error('Error initializing order counter:', error);
+                
+                // Try to get from localStorage as fallback
+                const savedCounter = localStorage.getItem('orderCounter');
+                if (savedCounter) {
+                    orderCounter = parseInt(savedCounter);
+                } else {
+                    orderCounter = 1;
+                }
+            }
+        }
+        
         // Splash Screen
         window.addEventListener('load', function() {
+            // Initialize order counter
+            initializeOrderCounter().then(() => {
+                console.log('Order counter initialized successfully');
+            });
+            
             setTimeout(function() {
                 document.getElementById('splashScreen').style.opacity = '0';
                 setTimeout(function() {
@@ -2313,6 +2447,14 @@
                 return;
             }
             
+            // Generate order ID
+            const orderId = 'ORD-' + String(orderCounter).padStart(4, '0');
+            
+            // Update order counter and save to localStorage
+            orderCounter++;
+            localStorage.setItem('orderCounter', orderCounter);
+            localStorage.setItem('lastOrderId', orderId);
+            
             // Prepare order data for Google Sheet
             const orderData = {
                 name: fullName,
@@ -2320,7 +2462,8 @@
                 email: email,
                 address: address,
                 items: cart,
-                total: cartTotal
+                total: cartTotal,
+                orderId: orderId
             };
             
             try {
@@ -2330,7 +2473,6 @@
                 placeOrderBtn.innerHTML = '<span class="loading"></span> Processing...';
                 placeOrderBtn.disabled = true;
                 
-                let orderId = '';
                 let googleSheetSuccess = false;
                 
                 // Method 1: Using FormData with iframe (most reliable)
@@ -2357,9 +2499,6 @@
                     
                     document.body.removeChild(iframe);
                     
-                    // Generate a fallback order ID
-                    orderId = 'ORD-' + String(orderCounter).padStart(4, '0');
-                    orderCounter++;
                     googleSheetSuccess = true;
                     console.log('Order submitted using iframe method, Order ID:', orderId);
                 } catch (iframeError) {
@@ -2376,9 +2515,6 @@
                         // Wait a bit for the request to be sent
                         await new Promise(resolve => setTimeout(resolve, 1000));
                         
-                        // Generate a fallback order ID
-                        orderId = 'ORD-' + String(orderCounter).padStart(4, '0');
-                        orderCounter++;
                         googleSheetSuccess = true;
                         console.log('Order submitted using image pixel method, Order ID:', orderId);
                     } catch (imgError) {
@@ -2395,9 +2531,6 @@
                                 body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
                             });
                             
-                            // Generate a fallback order ID
-                            orderId = 'ORD-' + String(orderCounter).padStart(4, '0');
-                            orderCounter++;
                             googleSheetSuccess = true;
                             console.log('Order submitted using fetch no-cors method, Order ID:', orderId);
                         } catch (fetchError) {
