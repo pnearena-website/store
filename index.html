@@ -2066,11 +2066,7 @@
         
         // Order ID counter
         let orderCounter = 1;
-        
-        // Cart Functionality
-        let cart = [];
-        let cartCount = 0;
-        let cartTotal = 0;
+        let lastOrderIdFromServer = null;
         
         // Function to fetch the last order ID from Google Sheet
         async function fetchLastOrderId() {
@@ -2110,6 +2106,16 @@
                     
                     // Add the script to the document
                     document.body.appendChild(script);
+                    
+                    // Set a timeout to handle cases where the server doesn't respond
+                    setTimeout(() => {
+                        if (window[callbackName]) {
+                            delete window[callbackName];
+                            document.body.removeChild(script);
+                            document.getElementById('syncStatus').style.display = 'none';
+                            reject(new Error('Request timed out'));
+                        }
+                    }, 5000); // 5 seconds timeout
                 });
             } catch (error) {
                 console.error('Error fetching last order ID:', error);
@@ -2129,6 +2135,18 @@
         // Function to initialize order counter
         async function initializeOrderCounter() {
             try {
+                // First try to get from localStorage
+                const savedCounter = localStorage.getItem('orderCounter');
+                const savedOrderId = localStorage.getItem('lastOrderId');
+                
+                if (savedCounter && savedOrderId) {
+                    orderCounter = parseInt(savedCounter);
+                    lastOrderIdFromServer = savedOrderId;
+                    console.log('Using order counter from localStorage:', orderCounter);
+                    return;
+                }
+                
+                // If not in localStorage, fetch from server
                 const lastOrderId = await fetchLastOrderId();
                 
                 if (lastOrderId) {
@@ -2137,6 +2155,7 @@
                     
                     if (!isNaN(numericPart)) {
                         orderCounter = numericPart + 1;
+                        lastOrderIdFromServer = lastOrderId;
                         // Save to localStorage as fallback
                         localStorage.setItem('lastOrderId', lastOrderId);
                         localStorage.setItem('orderCounter', orderCounter);
@@ -2145,16 +2164,10 @@
                     }
                 }
                 
-                // If we couldn't get a valid order ID from the server, try localStorage
-                const savedCounter = localStorage.getItem('orderCounter');
-                if (savedCounter) {
-                    orderCounter = parseInt(savedCounter);
-                    console.log('Using order counter from localStorage:', orderCounter);
-                } else {
-                    // Default fallback
-                    orderCounter = 1;
-                    console.log('Using default order counter:', orderCounter);
-                }
+                // If we couldn't get a valid order ID, use default
+                orderCounter = 1;
+                localStorage.setItem('orderCounter', orderCounter);
+                console.log('Using default order counter:', orderCounter);
             } catch (error) {
                 console.error('Error initializing order counter:', error);
                 
@@ -2164,7 +2177,16 @@
                     orderCounter = parseInt(savedCounter);
                 } else {
                     orderCounter = 1;
+                    localStorage.setItem('orderCounter', orderCounter);
                 }
+            }
+        }
+        
+        // Function to save order counter to localStorage
+        function saveOrderCounter() {
+            localStorage.setItem('orderCounter', orderCounter);
+            if (lastOrderIdFromServer) {
+                localStorage.setItem('lastOrderId', lastOrderIdFromServer);
             }
         }
         
@@ -2194,6 +2216,10 @@
         });
         
         // Cart Functions
+        let cart = [];
+        let cartCount = 0;
+        let cartTotal = 0;
+        
         function addToCart(name, price) {
             const existingItem = cart.find(item => item.name === name);
             
@@ -2452,8 +2478,7 @@
             
             // Update order counter and save to localStorage
             orderCounter++;
-            localStorage.setItem('orderCounter', orderCounter);
-            localStorage.setItem('lastOrderId', orderId);
+            saveOrderCounter();
             
             // Prepare order data for Google Sheet
             const orderData = {
