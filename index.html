@@ -534,6 +534,12 @@
             margin-bottom: 1rem;
             transform: translateZ(10px);
         }
+        .member-price {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+            margin-bottom: 1rem;
+            transform: translateZ(10px);
+        }
         .add-to-cart {
             width: 100%;
             padding: 0.8rem;
@@ -1118,6 +1124,11 @@
             color: var(--primary-pink);
             margin-bottom: 1.5rem;
         }
+        .product-detail-info .member-price {
+            font-size: 1.1rem;
+            color: var(--medium-gray);
+            margin-bottom: 1.5rem;
+        }
         .product-detail-info .description {
             line-height: 1.6;
             color: var(--medium-gray);
@@ -1161,6 +1172,76 @@
         .proceed-payment:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(168, 230, 207, 0.3);
+        }
+        
+        /* Image Carousel for Product Detail */
+        .image-carousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: var(--border-highlight);
+            margin-bottom: 1rem;
+        }
+        .carousel-container {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        .carousel-slide {
+            min-width: 100%;
+            height: 300px;
+            overflow: hidden;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .carousel-nav {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .carousel-dot.active {
+            background-color: var(--primary-pink);
+            transform: scale(1.2);
+        }
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+        .carousel-arrow:hover {
+            background-color: var(--primary-pink);
+            color: var(--white);
+        }
+        .carousel-prev {
+            left: 10px;
+        }
+        .carousel-next {
+            right: 10px;
         }
         
         /* Checkout Modal */
@@ -1481,6 +1562,9 @@
         .notification.error {
             background: linear-gradient(135deg, var(--danger) 0%, #e17055 100%);
         }
+        .notification.info {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
         .notification i {
             margin-right: 10px;
             font-size: 1.2rem;
@@ -1488,131 +1572,6 @@
         .notification.show {
             opacity: 1;
             transform: translateY(0);
-        }
-        
-        /* Promo Popup */
-        .promo-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8) rotateX(10deg);
-            background: linear-gradient(135deg, var(--white) 0%, #fff5f8 100%);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            z-index: 1002;
-            max-width: 500px;
-            width: 90%;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            transform-style: preserve-3d;
-            border: var(--border-highlight);
-        }
-        .promo-popup.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1) rotateX(0deg);
-        }
-        .promo-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(90deg, var(--primary-pink) 0%, var(--primary-dark-pink) 100%);
-            color: var(--white);
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            margin: -2rem -2rem 1.5rem;
-        }
-        .promo-header h3 {
-            font-size: 1.5rem;
-        }
-        .close-promo {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--white);
-            transition: all 0.3s ease;
-        }
-        .close-promo:hover {
-            transform: rotate(90deg);
-        }
-        .promo-content {
-            text-align: center;
-        }
-        .promo-content img {
-            width: 100%;
-            max-width: 200px;
-            margin-bottom: 1.5rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            border: var(--border-highlight);
-        }
-        .promo-content img:hover {
-            transform: scale(1.05) rotateY(5deg);
-        }
-        .promo-content h4 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: var(--primary-pink);
-        }
-        .promo-content p {
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-            color: var(--medium-gray);
-        }
-        .promo-btn {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background: linear-gradient(135deg, var(--primary-pink) 0%, var(--primary-dark-pink) 100%);
-            color: var(--white);
-            text-decoration: none;
-            border-radius: var(--border-radius);
-            font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(249, 197, 209, 0.2);
-        }
-        .promo-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(249, 197, 209, 0.3);
-        }
-        .countdown {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        .countdown-item {
-            text-align: center;
-            transform-style: preserve-3d;
-            perspective: 200px;
-        }
-        .countdown-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-pink);
-            background-color: rgba(249, 197, 209, 0.1);
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: var(--border-radius);
-            margin-bottom: 0.5rem;
-            transform: translateZ(10px);
-            transition: all 0.3s ease;
-            border: var(--border-highlight);
-        }
-        .countdown-item:hover .countdown-value {
-            transform: translateZ(20px) scale(1.1) rotateY(10deg);
-            background-color: rgba(249, 197, 209, 0.2);
-        }
-        .countdown-label {
-            font-size: 0.8rem;
-            color: var(--medium-gray);
         }
         
         /* Responsive */
@@ -1711,7 +1670,6 @@
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#shop">Shop</a></li>
-                <li><a href="#promo">Promo</a></li>
                 <li class="cart-icon" onclick="toggleCart()">
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-count">0</span>
@@ -1780,7 +1738,7 @@
         </div>
         <div class="about-location">
             <div class="location-image">
-                <img src="https://images.unsplash.com/photo-1556740749-bde5f1a4c2c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="PNE Arena Store">
+                <img src="https://lh3.googleusercontent.com/d/1RUFdtPGZ94ZWJhVxaVf8RWkPVNaKnEEu" alt="PNE Arena Store">
             </div>
             <div class="location-map">
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3970.968949740778!2d100.4834153147649!3d5.641037995977826!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x304b3d5a1a9b5a1b%3A0x1a9b5a1b5a1a9b5a!2sBandar%20Laguna%20Merbok%2C%2008000%20Sungai%20Petani%2C%20Kedah!5e0!3m2!1sen!2smy!4v1629786789012!5m2!1sen!2smy" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
@@ -1950,12 +1908,13 @@
                 <i class="fas fa-times"></i>
             </button>
             <div class="product-detail">
-                <div class="product-detail-image">
-                    <img id="productDetailImage" src="" alt="">
+                <div class="product-detail-image" id="productDetailImageContainer">
+                    <!-- Image carousel will be inserted here for products with multiple images -->
                 </div>
                 <div class="product-detail-info">
                     <h2 id="productDetailName"></h2>
                     <div class="price" id="productDetailPrice"></div>
+                    <div class="member-price" id="productDetailMemberPrice"></div>
                     <div class="description" id="productDetailDescription"></div>
                     <div class="product-actions">
                         <button class="add-to-cart-detail" id="productDetailAddToCart">Add to Cart</button>
@@ -2046,42 +2005,8 @@
         </div>
     </div>
     
-    <!-- Promo Popup -->
-    <div class="promo-popup" id="promoPopup">
-        <div class="promo-header">
-            <h3>Special Offer!</h3>
-            <button class="close-promo" onclick="closePromo()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="promo-content">
-            <img src="https://images.unsplash.com/photo-1615461067825-81f5c5e6d5b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Special Offer">
-            <h4>Buy 2 Medals, Get 1 Free!</h4>
-            <p>Limited time offer. Don't miss out on this amazing deal!</p>
-            <div class="countdown">
-                <div class="countdown-item">
-                    <div class="countdown-value" id="days">00</div>
-                    <div class="countdown-label">Days</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-value" id="hours">00</div>
-                    <div class="countdown-label">Hours</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-value" id="minutes">00</div>
-                    <div class="countdown-label">Minutes</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-value" id="seconds">00</div>
-                    <div class="countdown-label">Seconds</div>
-                </div>
-            </div>
-            <a href="#shop" class="promo-btn" onclick="closePromo(); scrollToSection('shop');">Shop Now</a>
-        </div>
-    </div>
-    
     <!-- Overlay -->
-    <div class="overlay" id="overlay" onclick="toggleCart(); closePromo(); closeProductModal(); closeCheckoutModal(); closeOrderConfirmation();"></div>
+    <div class="overlay" id="overlay" onclick="toggleCart(); closeProductModal(); closeCheckoutModal(); closeOrderConfirmation();"></div>
     
     <!-- Floating Buttons -->
     <div class="floating-buttons">
@@ -2100,54 +2025,78 @@
             {
                 name: "Adult Jubah",
                 price: 250,
-                image: "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                memberPrice: 220,
+                minOrder: 1,
+                image: "https://lh3.googleusercontent.com/d/1pO3YlB2ugLV8DLEks9JeRzXl9wfaKTAB",
                 description: "High-quality adult jubah made from comfortable material. Free cap included."
             },
             {
                 name: "Jubah - Year 6",
                 price: 170,
-                image: "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                memberPrice: 150,
+                minOrder: 10,
+                image: "https://lh3.googleusercontent.com/d/1pO3YlB2ugLV8DLEks9JeRzXl9wfaKTAB",
                 description: "Perfect jubah for Year 6 students. Made with durable material and includes a free cap."
             },
             {
                 name: "Jubah - Kindergarten",
                 price: 110,
-                image: "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                memberPrice: 99,
+                minOrder: 10,
+                image: "https://lh3.googleusercontent.com/d/1pO3YlB2ugLV8DLEks9JeRzXl9wfaKTAB",
                 description: "Comfortable jubah designed for kindergarten children. Includes a free cap."
             },
             {
                 name: "Pluque Arkalic",
                 price: 19.90,
-                image: "https://images.unsplash.com/photo-1615461067825-81f5c5e6d5b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                memberPrice: 17.50,
+                minOrder: 1,
+                image: "https://lh3.googleusercontent.com/d/1DNAnlAY90YyeDMY-r1QIQm1wOZ_p8iLv",
                 description: "High-quality plaque with name print. Size: 145mm x 100mm."
             },
             {
                 name: "Medal - Cute Design",
                 price: 12.90,
-                image: "https://images.unsplash.com/photo-1615461067825-81f5c5e6d5b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                memberPrice: 10.90,
+                minOrder: 10,
+                image: "https://lh3.googleusercontent.com/d/1En4J60-LYVyppW88eOZ9VKLuCKPaeyT5",
                 description: "Cute design medal made from arkalic material. Perfect for competitions and achievements."
             },
             {
                 name: "Keychain - Cute Design",
                 price: 5.90,
-                image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                memberPrice: 3.90,
+                minOrder: 10,
+                images: [
+                    "https://lh3.googleusercontent.com/d/1PhJzpT6_safxYOnJ3BiLFrq2VD5MItRW",
+                    "https://lh3.googleusercontent.com/d/12T-BRnjBo0EQ2bd4829F1xuC5aQ3FvI-",
+                    "https://lh3.googleusercontent.com/d/1cA-bZM4-xBc2Ym3_rMPav_bzWYZMaKXN",
+                    "https://lh3.googleusercontent.com/d/1689Gh4bi5-VSa4i_UgAqb1IdO3n2nV10",
+                    "https://lh3.googleusercontent.com/d/1yb0Ht6ZpnAygLopMW1XFZY8B7bzNE8q1"
+                ],
                 description: "Stylish keychain with cute design. Made from arkalic material using sublimation printing. Size: 9cm x 3cm."
             },
             {
                 name: "Keychain - Attendance Design",
                 price: 4.90,
-                image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                memberPrice: 3.50,
+                minOrder: 10,
+                image: "https://lh3.googleusercontent.com/d/1kqC0z-ehgrSJ7R91YVNUY7_OhgbYrVV9",
                 description: "Attendance design keychain made from acrylic material. Thickness: 2mm, Size: 4.4cm x 5.5cm."
             },
             {
                 name: "Kindergarten T-Shirt",
                 price: 29.90,
+                memberPrice: 25.00,
+                minOrder: 20,
                 image: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
                 description: "Comfortable kindergarten t-shirt made from microfiber material. Free school name & logo printing."
             },
             {
                 name: "Kindergarten T-Shirt + Pants",
                 price: 45.00,
+                memberPrice: 39.90,
+                minOrder: 20,
                 image: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
                 description: "Complete kindergarten set with t-shirt and pants. T-shirt made from microfiber and pants from track suit material."
             }
@@ -2173,21 +2122,32 @@
             products.forEach(product => {
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
+                
+                // Use the first image if it's an array, otherwise use the single image
+                const productImage = Array.isArray(product.images) ? product.images[0] : product.image;
+                
+                // Create member price text
+                let memberPriceText = '';
+                if (product.memberPrice) {
+                    memberPriceText = `<div class="member-price">Member Price: RM ${product.memberPrice.toFixed(2)}${product.minOrder > 1 ? ` (Minimum order: ${product.minOrder} pcs)` : ''}</div>`;
+                }
+                
                 productCard.innerHTML = `
-                    <div class="product-image" onclick="showProductDetail('${product.name}', ${product.price}, '${product.image}', '${product.description}')">
-                        <img src="${product.image}" alt="${product.name}">
+                    <div class="product-image" onclick="showProductDetail('${product.name}', ${product.price}, ${product.memberPrice || 0}, ${product.minOrder}, '${Array.isArray(product.images) ? JSON.stringify(product.images) : product.image}', '${product.description}')">
+                        <img src="${productImage}" alt="${product.name}">
                     </div>
                     <div class="product-info">
-                        <h3 class="product-name" onclick="showProductDetail('${product.name}', ${product.price}, '${product.image}', '${product.description}')">${product.name}</h3>
+                        <h3 class="product-name" onclick="showProductDetail('${product.name}', ${product.price}, ${product.memberPrice || 0}, ${product.minOrder}, '${Array.isArray(product.images) ? JSON.stringify(product.images) : product.image}', '${product.description}')">${product.name}</h3>
                         <p class="product-price">RM ${product.price.toFixed(2)}</p>
-                        <button class="add-to-cart" onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
+                        ${memberPriceText}
+                        <button class="add-to-cart" onclick="addToCart('${product.name}', ${product.price}, ${product.memberPrice || 0}, ${product.minOrder})">Add to Cart</button>
                     </div>
                 `;
                 productsGrid.appendChild(productCard);
             });
         }
         
-        function addToCart(name, price) {
+        function addToCart(name, price, memberPrice, minOrder) {
             const existingItem = cart.find(item => item.name === name);
             
             if (existingItem) {
@@ -2196,11 +2156,14 @@
                 cart.push({
                     name: name,
                     price: price,
+                    memberPrice: memberPrice,
+                    minOrder: minOrder,
                     quantity: 1
                 });
             }
             
             updateCart();
+            checkMemberPriceEligibility();
             showNotification(`${name} added to cart!`, 'success');
         }
         
@@ -2210,7 +2173,9 @@
             
             cart.forEach(item => {
                 cartCount += item.quantity;
-                cartTotal += item.price * item.quantity;
+                // Use member price if eligible
+                const itemPrice = isEligibleForMemberPrice(item) ? item.memberPrice : item.price;
+                cartTotal += itemPrice * item.quantity;
             });
             
             document.querySelector('.cart-count').textContent = cartCount;
@@ -2228,6 +2193,23 @@
             renderCartItems();
         }
         
+        function isEligibleForMemberPrice(item) {
+            return item.memberPrice && item.quantity >= item.minOrder;
+        }
+        
+        function checkMemberPriceEligibility() {
+            cart.forEach(item => {
+                if (item.memberPrice && item.quantity >= item.minOrder - 1) {
+                    // Show notification when customer is close to getting member price
+                    if (item.quantity === item.minOrder - 1) {
+                        showNotification(`Add 1 more ${item.name} to get member price (RM ${item.memberPrice.toFixed(2)})!`, 'info');
+                    } else if (item.quantity === item.minOrder) {
+                        showNotification(`Congratulations! You're now eligible for member price on ${item.name} (RM ${item.memberPrice.toFixed(2)})!`, 'success');
+                    }
+                }
+            });
+        }
+        
         function renderCartItems() {
             const cartItemsContainer = document.getElementById('cartItems');
             
@@ -2239,6 +2221,9 @@
             cartItemsContainer.innerHTML = '';
             
             cart.forEach((item, index) => {
+                const isMemberPriceEligible = isEligibleForMemberPrice(item);
+                const currentPrice = isMemberPriceEligible ? item.memberPrice : item.price;
+                
                 const cartItem = document.createElement('div');
                 cartItem.className = 'cart-item';
                 cartItem.innerHTML = `
@@ -2247,12 +2232,21 @@
                     </div>
                     <div class="cart-item-details">
                         <div class="cart-item-name">${item.name}</div>
-                        <div class="cart-item-price">RM ${item.price.toFixed(2)}</div>
+                        <div class="cart-item-price">
+                            ${isMemberPriceEligible ? 
+                                `<span style="text-decoration: line-through; color: #999;">RM ${item.price.toFixed(2)}</span> → RM ${currentPrice.toFixed(2)}` : 
+                                `RM ${currentPrice.toFixed(2)}`
+                            }
+                        </div>
                         <div class="cart-item-quantity">
                             <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">-</button>
                             <input type="number" class="quantity-input" value="${item.quantity}" min="1" onchange="setQuantity(${index}, this.value)">
                             <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">+</button>
                         </div>
+                        ${item.memberPrice && item.quantity < item.minOrder ? 
+                            `<div style="font-size: 0.8rem; color: var(--primary-pink); margin-top: 5px;">Add ${item.minOrder - item.quantity} more for member price (RM ${item.memberPrice.toFixed(2)})</div>` : 
+                            ''
+                        }
                     </div>
                 `;
                 cartItemsContainer.appendChild(cartItem);
@@ -2267,6 +2261,7 @@
             }
             
             updateCart();
+            checkMemberPriceEligibility();
         }
         
         function setQuantity(index, value) {
@@ -2279,6 +2274,7 @@
             }
             
             updateCart();
+            checkMemberPriceEligibility();
         }
         
         function toggleCart() {
@@ -2302,20 +2298,123 @@
         }
         
         // Product Detail Modal
-        function showProductDetail(name, price, image, description) {
-            currentProduct = { name, price, image, description };
+        function showProductDetail(name, price, memberPrice, minOrder, image, description) {
+            currentProduct = { name, price, memberPrice, minOrder, image, description };
             
             document.getElementById('productDetailName').textContent = name;
             document.getElementById('productDetailPrice').textContent = `RM ${price.toFixed(2)}`;
-            document.getElementById('productDetailImage').src = image;
-            document.getElementById('productDetailImage').alt = name;
+            
+            // Show member price if available
+            if (memberPrice) {
+                document.getElementById('productDetailMemberPrice').innerHTML = `Member Price: RM ${memberPrice.toFixed(2)}${minOrder > 1 ? ` (Minimum order: ${minOrder} pcs)` : ''}`;
+                document.getElementById('productDetailMemberPrice').style.display = 'block';
+            } else {
+                document.getElementById('productDetailMemberPrice').style.display = 'none';
+            }
+            
             document.getElementById('productDetailDescription').textContent = description;
+            
+            // Check if image is a string or an array (for multiple images)
+            const imageContainer = document.getElementById('productDetailImageContainer');
+            imageContainer.innerHTML = '';
+            
+            if (image.startsWith('[')) {
+                // It's an array of images
+                const images = JSON.parse(image);
+                
+                // Create image carousel
+                const carousel = document.createElement('div');
+                carousel.className = 'image-carousel';
+                
+                const carouselContainer = document.createElement('div');
+                carouselContainer.className = 'carousel-container';
+                
+                // Create slides
+                images.forEach((imgSrc, index) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'carousel-slide';
+                    slide.innerHTML = `<img src="${imgSrc}" alt="${name} - Image ${index + 1}">`;
+                    carouselContainer.appendChild(slide);
+                });
+                
+                // Create navigation dots
+                const navDots = document.createElement('div');
+                navDots.className = 'carousel-nav';
+                
+                images.forEach((_, index) => {
+                    const dot = document.createElement('div');
+                    dot.className = `carousel-dot ${index === 0 ? 'active' : ''}`;
+                    dot.addEventListener('click', () => goToSlide(index));
+                    navDots.appendChild(dot);
+                });
+                
+                // Create navigation arrows
+                const prevArrow = document.createElement('div');
+                prevArrow.className = 'carousel-arrow carousel-prev';
+                prevArrow.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                prevArrow.addEventListener('click', () => prevSlide());
+                
+                const nextArrow = document.createElement('div');
+                nextArrow.className = 'carousel-arrow carousel-next';
+                nextArrow.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                nextArrow.addEventListener('click', () => nextSlide());
+                
+                carousel.appendChild(carouselContainer);
+                carousel.appendChild(navDots);
+                carousel.appendChild(prevArrow);
+                carousel.appendChild(nextArrow);
+                
+                imageContainer.appendChild(carousel);
+                
+                // Set up carousel functionality
+                let currentSlide = 0;
+                const slides = carousel.querySelectorAll('.carousel-slide');
+                const dots = carousel.querySelectorAll('.carousel-dot');
+                
+                function showSlide(index) {
+                    slides.forEach((slide, i) => {
+                        slide.style.transform = `translateX(${100 * (i - index)}%)`;
+                    });
+                    
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle('active', i === index);
+                    });
+                }
+                
+                function goToSlide(index) {
+                    currentSlide = index;
+                    showSlide(currentSlide);
+                }
+                
+                function nextSlide() {
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    showSlide(currentSlide);
+                }
+                
+                function prevSlide() {
+                    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                    showSlide(currentSlide);
+                }
+                
+                // Initialize carousel
+                showSlide(0);
+                
+            } else {
+                // It's a single image
+                const img = document.createElement('img');
+                img.src = image;
+                img.alt = name;
+                img.style.width = '100%';
+                img.style.borderRadius = 'var(--border-radius)';
+                img.style.boxShadow = 'var(--shadow)';
+                img.style.border = 'var(--border-highlight)';
+                imageContainer.appendChild(img);
+            }
             
             // Set up add to cart button
             const addToCartBtn = document.getElementById('productDetailAddToCart');
             addToCartBtn.onclick = function() {
-                addToCart(name, price);
-                showNotification(`${name} added to cart!`, 'success');
+                addToCart(name, price, memberPrice || 0, minOrder);
             };
             
             // Set up proceed to payment button
@@ -2325,6 +2424,8 @@
                 cart = [{
                     name: name,
                     price: price,
+                    memberPrice: memberPrice || 0,
+                    minOrder: minOrder,
                     quantity: 1
                 }];
                 updateCart();
@@ -2371,11 +2472,17 @@
             checkoutOrderItemsContainer.innerHTML = '';
             
             cart.forEach(item => {
+                const isMemberPriceEligible = isEligibleForMemberPrice(item);
+                const currentPrice = isMemberPriceEligible ? item.memberPrice : item.price;
+                
                 const orderItem = document.createElement('div');
                 orderItem.className = 'order-summary-item';
                 orderItem.innerHTML = `
                     <span>${item.name} x ${item.quantity}</span>
-                    <span>RM ${(item.price * item.quantity).toFixed(2)}</span>
+                    <span>${isMemberPriceEligible ? 
+                        `<span style="text-decoration: line-through; color: #999;">RM ${(item.price * item.quantity).toFixed(2)}</span> → RM ${(currentPrice * item.quantity).toFixed(2)}` : 
+                        `RM ${(currentPrice * item.quantity).toFixed(2)}`
+                    }</span>
                 `;
                 checkoutOrderItemsContainer.appendChild(orderItem);
             });
@@ -2423,6 +2530,29 @@
             // Format phone number to remove spaces and special characters that might cause issues in Google Sheets
             const formattedPhone = `${countryCode}${phone.replace(/[\s\-\(\)]/g, '')}`;
             
+            // Prepare order details for WhatsApp message
+            let orderDetails = `Name: ${fullName}\n`;
+            orderDetails += `Phone: ${countryCode} ${phone}\n`;
+            orderDetails += `Email: ${email}\n`;
+            orderDetails += `Address: ${address}\n\n`;
+            orderDetails += `Order Items:\n`;
+            
+            cart.forEach(item => {
+                const isMemberPriceEligible = isEligibleForMemberPrice(item);
+                const currentPrice = isMemberPriceEligible ? item.memberPrice : item.price;
+                
+                orderDetails += `${item.name} x ${item.quantity} = RM ${(currentPrice * item.quantity).toFixed(2)}\n`;
+            });
+            
+            orderDetails += `\nTotal: RM ${cartTotal.toFixed(2)}\n\n`;
+            orderDetails += `Status: Payment Successful\n`;
+            orderDetails += `Please send proof of payment receipt to complete your order.`;
+            
+            // Update WhatsApp link with order details
+            const whatsappLink = document.getElementById('whatsappReceiptBtn');
+            const newLink = `https://wa.me/60134036123?text=${encodeURIComponent(orderDetails)}`;
+            whatsappLink.setAttribute('href', newLink);
+            
             // Prepare order data for Google Sheets
             const orderData = {
                 timestamp: new Date().toISOString(),
@@ -2436,26 +2566,6 @@
             
             // Save order to Google Sheets
             saveOrderToGoogleSheets(orderData);
-            
-            // Prepare order details for WhatsApp message (keep the original formatting for readability)
-            let orderDetails = `Name: ${fullName}\n`;
-            orderDetails += `Phone: ${countryCode} ${phone}\n`;
-            orderDetails += `Email: ${email}\n`;
-            orderDetails += `Address: ${address}\n\n`;
-            orderDetails += `Order Items:\n`;
-            
-            cart.forEach(item => {
-                orderDetails += `${item.name} x ${item.quantity} = RM ${(item.price * item.quantity).toFixed(2)}\n`;
-            });
-            
-            orderDetails += `\nTotal: RM ${cartTotal.toFixed(2)}\n\n`;
-            orderDetails += `Status: Payment Successful\n`;
-            orderDetails += `Please send proof of payment receipt to complete your order.`;
-            
-            // Update WhatsApp link with order details
-            const whatsappLink = document.getElementById('whatsappReceiptBtn');
-            const newLink = `https://wa.me/60134036123?text=${encodeURIComponent(orderDetails)}`;
-            whatsappLink.setAttribute('href', newLink);
             
             // Close checkout modal and show order confirmation
             closeCheckoutModal();
@@ -2485,54 +2595,6 @@
             scrollToSection('shop');
         }
         
-        // Promo Popup
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                document.getElementById('promoPopup').classList.add('active');
-                document.getElementById('overlay').classList.add('active');
-                startCountdown();
-            }, 5000);
-        });
-        
-        function closePromo() {
-            document.getElementById('promoPopup').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-        }
-        
-        // Countdown Timer
-        function startCountdown() {
-            const countdownDate = new Date();
-            countdownDate.setDate(countdownDate.getDate() + 3); // 3 days from now
-            
-            const daysElement = document.getElementById('days');
-            const hoursElement = document.getElementById('hours');
-            const minutesElement = document.getElementById('minutes');
-            const secondsElement = document.getElementById('seconds');
-            
-            const countdownInterval = setInterval(function() {
-                const now = new Date().getTime();
-                const distance = countdownDate - now;
-                
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                
-                daysElement.textContent = days.toString().padStart(2, '0');
-                hoursElement.textContent = hours.toString().padStart(2, '0');
-                minutesElement.textContent = minutes.toString().padStart(2, '0');
-                secondsElement.textContent = seconds.toString().padStart(2, '0');
-                
-                if (distance < 0) {
-                    clearInterval(countdownInterval);
-                    daysElement.textContent = '00';
-                    hoursElement.textContent = '00';
-                    minutesElement.textContent = '00';
-                    secondsElement.textContent = '00';
-                }
-            }, 1000);
-        }
-        
         // Notification
         function showNotification(message, type = 'success') {
             // Remove any existing notifications
@@ -2545,7 +2607,10 @@
             notification.className = `notification ${type}`;
             
             // Add icon based on type
-            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            let icon = 'fa-check-circle';
+            if (type === 'error') icon = 'fa-exclamation-circle';
+            if (type === 'info') icon = 'fa-info-circle';
+            
             notification.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
             
             document.body.appendChild(notification);
